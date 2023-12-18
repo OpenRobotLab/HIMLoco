@@ -21,7 +21,7 @@
   <a href="./assets/HIMLocomotion.pdf" target='_blank'>
     <img src="https://img.shields.io/badge/Paper-📖-blue?">
   </a> 
-  <a href="https://junfeng-long.github.io/himloco" target='_blank'>
+  <a href="https://junfeng-long.github.io/HIMLoco" target='_blank'>
     <img src="https://img.shields.io/badge/Project-&#x1F680-blue">
   </a>
 </p>
