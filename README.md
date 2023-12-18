@@ -42,14 +42,14 @@ This paper presents a Hybrid Internal Model (HIM) based method for legged locomo
 <p align="center">
   <img src="assets/imc.jpeg" align="center" width="100%">
 </p>
-The classical Internal Model Control (IMC) suggests that we can perform robust control without precise environmental information. IMC estimates the disturbance by using a internal model to simulate the system response, the more accurate the internal model is , the more robust control it can perform.
+The classical Internal Model Control(IMC) suggests that we can perform robust control without directly modeling the disturbance. As shown in the above figure, it uses an internal model to simulate the system response and further estimate the system disturbance, increasing the closed-loop stability. The more accurate the internal model is, the more robust control it can perform. 
 In the context of locomotion, the system disturbance from the environment can be estimated from the response of the robot. Therefore, we consider external environmental properties such as elevation maps, ground friction, and ground restitution as disturbances, and do not exploit them for modeling. As shown in the figure, we modify the original IMC for the locomotion task. The commands contain the reference velocity of our robot, however, there also exists an underlying command that requires the robot to keep stable through the whole process. To achieve a closed-loop control system, we need feedback containing the robot's velocity and an implicit response indicating stability that can not be directly accessed from the robot. Following the principles of the IMC framework, we can build an internal model that can simulate the robot's velocity and the implicit response indicating stability. With this model, we can estimate the disturbance brought by the environment and perform robust locomotion control.
 
 ### Framework
 <p align="center">
   <img src="assets/overview.jpeg" align="center" width="100%">
 </p>
-The policy network receives partial observations and the hybrid internal embedding, which is optimized to the robot's successor state with contrastive learning. The framework is alternatively optimized with HIO and PPO.
+The policy network receives partial observations and the hybrid internal embedding, which is optimized to be close to the robot's successor state where the response of the robot system is naturally embedded, we use contrastive learning in this process to utilize batch-level information and deal with noise.
 
 ### [Demo](https://junfeng-long.github.io/HIMLoco/)
 [![demo](assets/demo.jpeg "demo")](https://junfeng-long.github.io/HIMLoco/)
