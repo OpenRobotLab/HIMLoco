@@ -59,8 +59,8 @@ The policy network receives partial observations and the hybrid internal embeddi
 If you find our work helpful, please cite:
 
 ```bibtex
-@article{xiao2023unified,
-  author    = {Long, Junfeng and Wang, Zirui and Li, Quanyi and Gao, Jiawei and Cao, Liu and Pang, Jiangmiao},
+@article{long2023himloco,
+  author    = {Junfeng Long, Zirui Wang, Quanyi Li, Jiawei Gao, Liu Cao, Jiangmiao Pang},
   title     = {Hybrid Internal Model: A Simple and Efficient Learner for Agile Legged Locomotion},
   journal   = {Arxiv},
   year      = {2023},
