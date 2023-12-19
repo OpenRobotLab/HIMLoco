@@ -7,8 +7,8 @@
     <a href='https://github.com/Wongziseoi/' target='_blank'>Zirui Wang*</a>&emsp;
     <a href='https://quanyili.github.io' target='_blank'>Quanyi Li</a>&emsp;
     <a href='https://scholar.google.com/citations?user=NJxUNrcAAAAJ&hl=en' target='_blank'>Jiawei Gao</a>&emsp;
-    <a href='http://zhangwenwei.cn/' target='_blank'>Liu Cao</a>&emsp;
-    <a href='https://daibo.info/' target='_blank'>Jiangmiao Pang</a>&emsp;
+    <a href='https://github.com/xiaohu-art' target='_blank'>Liu Cao</a>&emsp;
+    <a href='https://oceanpang.github.io' target='_blank'>Jiangmiao Pang</a>&emsp;
     <br>
     Shanghai AI Laboratory&emsp;Zhejiang University&emsp;Tsinghua University
   </p>
