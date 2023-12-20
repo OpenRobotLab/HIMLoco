@@ -26,6 +26,9 @@
   </a>
 </p>
 
+### [Demo](https://junfeng-long.github.io/HIMLoco/)
+[![demo](assets/demo.jpeg "demo")](https://junfeng-long.github.io/HIMLoco/)
+
 ## 🏠 About
 <!-- ![Teaser](assets/teaser.jpg) -->
 <div style="text-align: center;">
@@ -51,8 +54,6 @@ In the context of locomotion, the system disturbance from the environment can be
 </p>
 The policy network receives partial observations and the hybrid internal embedding, which is optimized to be close to the robot's successor state where the response of the robot system is naturally embedded, we use contrastive learning in this process to utilize batch-level information and deal with noise.
 
-### [Demo](https://junfeng-long.github.io/HIMLoco/)
-[![demo](assets/demo.jpeg "demo")](https://junfeng-long.github.io/HIMLoco/)
 
 ## 🔗 Citation
 
