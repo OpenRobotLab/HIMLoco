@@ -1,7 +1,7 @@
 
 <br>
 <p align="center">
-<h1 align="center"><img src="assets/icon.png" align="center" width="6.5%"><strong>Hybrid Internal Model: A Simple and Efficient Learner for Agile Legged Locomotion</strong></h1>
+<h1 align="center"><img src="assets/icon.png" align="center" width="6.5%"><strong>Hybrid Internal Model: Learning Agile Legged Locomotion with Simulated Robot Response</strong></h1>
   <p align="center">
     <a href='https://github.com/Junfeng-Long/' target='_blank'>Junfeng Long*</a>&emsp;
     <a href='https://github.com/Wongziseoi/' target='_blank'>Zirui Wang*</a>&emsp;
@@ -62,7 +62,7 @@ If you find our work helpful, please cite:
 ```bibtex
 @article{long2023himloco,
   author    = {Junfeng Long, Zirui Wang, Quanyi Li, Jiawei Gao, Liu Cao, Jiangmiao Pang},
-  title     = {Hybrid Internal Model: A Simple and Efficient Learner for Agile Legged Locomotion},
+  title     = {Hybrid Internal Model: Learning Agile Legged Locomotion with Simulated Robot Response},
   journal   = {Arxiv},
   year      = {2023},
 }
