@@ -42,7 +42,7 @@ We test our codes under the following environment:
 
 
 4. Install HIMLoco.
-  - `cd rsl_rl_HIM && pip install -e .`
+  - `cd rsl_rl && pip install -e .`
   - `cd ../legged_gym && pip install -e .`
 
 **Note:** Please use legged_gym and rsl_rl provided in this repo, we have modefications on these repos.
