@@ -1,0 +1,9 @@
+matplotlib==3.5.3
+ninja==1.11.1.1
+numpy==1.21.6
+tensorboard==2.11.2
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+torch==1.10.0+cu113
+torchaudio==0.10.0+cu113
+torchvision==0.11.1+cu113
