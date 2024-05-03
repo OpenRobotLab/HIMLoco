@@ -53,13 +53,25 @@ class Go1RoughCfg( LeggedRobotCfg ):
     class control( LeggedRobotCfg.control ):
         # PD Drive parameters:
         control_type = 'P'
-        stiffness = {'joint': 30.}  # [N*m/rad]
-        damping = {'joint': 1.5}     # [N*m*s/rad]
+        stiffness = {'joint': 40.0}  # [N*m/rad]
+        damping = {'joint': 1.0}     # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 4
-        hip_reduction = 0.5
+        hip_reduction = 1.0
+
+    class commands( LeggedRobotCfg.commands ):
+            curriculum = True
+            max_curriculum = 2.0
+            num_commands = 4 # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+            resampling_time = 10. # time before command are changed[s]
+            heading_command = True # if true: compute ang vel command from heading error
+            class ranges( LeggedRobotCfg.commands.ranges):
+                lin_vel_x = [-1.0, 1.0] # min max [m/s]
+                lin_vel_y = [-1.0, 1.0]   # min max [m/s]
+                ang_vel_yaw = [-3.14, 3.14]    # min max [rad/s]
+                heading = [-3.14, 3.14]
 
     class asset( LeggedRobotCfg.asset ):
         file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/go1/urdf/go1.urdf'
