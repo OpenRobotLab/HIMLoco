@@ -469,7 +469,9 @@ class LeggedRobot(BaseTask):
         high_vel_env_ids = env_ids[high_vel_env_ids.nonzero(as_tuple=True)]
 
         self.commands[high_vel_env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(high_vel_env_ids), 1), device=self.device).squeeze(1)
-        # self.commands[high_vel_env_ids, 1] = = torch_rand_float(-1.5, 1.5, (len(high_vel_env_ids), 1), device=self.device).squeeze(1)
+
+        # set y commands of high vel envs to zero
+        self.commands[high_vel_env_ids, 1:2] *= (torch.norm(self.commands[high_vel_env_ids, 0:1], dim=1) < 1.0).unsqueeze(1)
 
         # set small commands to zero
         self.commands[env_ids, :2] *= (torch.norm(self.commands[env_ids, :2], dim=1) > 0.2).unsqueeze(1)
