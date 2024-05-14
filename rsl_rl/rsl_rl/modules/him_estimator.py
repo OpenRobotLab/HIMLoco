@@ -54,7 +54,8 @@ class HIMEstimator(nn.Module):
         self.proto = nn.Embedding(num_prototype, enc_hidden_dims[-1])
 
         # Optimizer
-        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
+        self.learning_rate = learning_rate
+        self.optimizer = optim.Adam(self.parameters(), lr=self.learning_rate)
 
     def get_latent(self, obs_history):
         vel, z = self.encode(obs_history)
@@ -72,7 +73,12 @@ class HIMEstimator(nn.Module):
         z = F.normalize(z, dim=-1, p=2)
         return vel, z
 
-    def update(self, obs_history, next_critic_obs):
+    def update(self, obs_history, next_critic_obs, lr=None):
+        if lr is not None:
+            self.learning_rate = lr
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] = self.learning_rate
+                
         vel = next_critic_obs[:, self.num_one_step_obs:self.num_one_step_obs+3].detach()
         next_obs = next_critic_obs.detach()[:, 3:self.num_one_step_obs+3]
 

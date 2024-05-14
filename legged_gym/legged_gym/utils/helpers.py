@@ -35,6 +35,7 @@ import numpy as np
 import random
 from isaacgym import gymapi
 from isaacgym import gymutil
+import torch.nn.functional as F
 
 from legged_gym import LEGGED_GYM_ROOT_DIR, LEGGED_GYM_ENVS_DIR
 
@@ -228,8 +229,10 @@ class PolicyExporterHIM(torch.nn.Module):
         self.estimator = copy.deepcopy(actor_critic.estimator.encoder)
 
     def forward(self, obs_history):
-        latent = self.estimator(obs_history)[:, 0:19]
-        return self.actor(torch.cat((obs_history[:, 0:45], latent), dim=1))
+        parts = self.estimator(obs_history)[:, 0:19]
+        vel, z = parts[..., :3], parts[..., 3:]
+        z = F.normalize(z, dim=-1, p=2.0)
+        return self.actor(torch.cat((obs_history[:, 0:45], vel, z), dim=1))
 
     def export(self, path):
         os.makedirs(path, exist_ok=True)

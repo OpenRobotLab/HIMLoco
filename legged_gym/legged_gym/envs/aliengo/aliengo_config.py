@@ -102,18 +102,18 @@ class AlienGoRoughCfg( LeggedRobotCfg ):
             stand_still = -0.
             torques = -0.0
             dof_vel = -0.0
-            dof_pos_limits = -5.0
-            dof_vel_limits = -5.0
-            torque_limits = -5.0
+            dof_pos_limits = 0.0
+            dof_vel_limits = 0.0
+            torque_limits = 0.0
 
         only_positive_rewards = False # if true negative total rewards are clipped at zero (avoids early termination problems)
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = 0.95 # percentage of urdf limits, values above this limit are penalized
         soft_dof_vel_limit = 0.95
         soft_torque_limit = 0.95
-        base_height_target = 0.40
+        base_height_target = 0.30
         max_contact_force = 100. # forces above this value are penalized
-        clearance_height_target = -0.22
+        clearance_height_target = -0.20
 
 class AlienGoRoughCfgPPO( LeggedRobotCfgPPO ):
     class algorithm( LeggedRobotCfgPPO.algorithm ):
