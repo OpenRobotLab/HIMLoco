@@ -189,4 +189,4 @@ class HIMPPO:
         mean_swap_loss /= num_updates
         self.storage.clear()
 
-        return mean_value_loss, mean_surrogate_loss, estimation_loss, swap_loss
+        return mean_value_loss, mean_surrogate_loss, mean_estimation_loss, mean_swap_loss
