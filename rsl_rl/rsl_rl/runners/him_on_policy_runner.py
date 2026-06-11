@@ -80,6 +80,8 @@ class HIMOnPolicyRunner:
         self.tot_timesteps = 0
         self.tot_time = 0
         self.current_learning_iteration = 0
+        self.best_reward    = -float('inf')
+        self.best_model_path = None
 
         _, _ = self.env.reset()
     
@@ -139,15 +141,33 @@ class HIMOnPolicyRunner:
                 start = stop
                 self.alg.compute_returns(critic_obs)
                 
-            mean_value_loss, mean_surrogate_loss, mean_estimation_loss, mean_swap_loss = self.alg.update()
+            mean_value_loss, mean_surrogate_loss, mean_estimation_loss, mean_kl_loss, mean_recon_loss = self.alg.update()
             stop = time.time()
             learn_time = stop - start
             if self.log_dir is not None:
                 self.log(locals())
             if it % self.save_interval == 0:
-                self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(it)))
+                cur_path = os.path.join(self.log_dir, 'model_{}.pt'.format(it))
+                self.save(cur_path)
+
+                # Delete previous checkpoint (keep only latest + best)
+                prev_it = it - self.save_interval
+                if prev_it > 0:
+                    prev_path = os.path.join(self.log_dir, 'model_{}.pt'.format(prev_it))
+                    if os.path.exists(prev_path) and prev_path != self.best_model_path:
+                        os.remove(prev_path)
+
+                # Track best model by mean reward
+                if len(rewbuffer) > 0:
+                    cur_reward = statistics.mean(rewbuffer)
+                    if cur_reward > self.best_reward:
+                        self.best_reward = cur_reward
+                        self.best_model_path = os.path.join(self.log_dir, 'model_best.pt')
+                        self.save(self.best_model_path)
+                        print(f'  ** New best model saved: reward={cur_reward:.2f} at iter {it}')
+
             ep_infos.clear()
-        
+
         self.current_learning_iteration += num_learning_iterations
         self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(self.current_learning_iteration)))
 
@@ -176,7 +196,8 @@ class HIMOnPolicyRunner:
         self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
         self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
         self.writer.add_scalar('Loss/Estimation Loss', locs['mean_estimation_loss'], locs['it'])
-        self.writer.add_scalar('Loss/Swap Loss', locs['mean_swap_loss'], locs['it'])
+        self.writer.add_scalar('Loss/KL Loss', locs['mean_kl_loss'], locs['it'])
+        self.writer.add_scalar('Loss/Reconstruction Loss', locs['mean_recon_loss'], locs['it'])
         self.writer.add_scalar('Loss/learning_rate', self.alg.learning_rate, locs['it'])
         self.writer.add_scalar('Policy/mean_noise_std', mean_std.item(), locs['it'])
         self.writer.add_scalar('Perf/total_fps', fps, locs['it'])
@@ -198,7 +219,8 @@ class HIMOnPolicyRunner:
                           f"""{'Value function loss:':>{pad}} {locs['mean_value_loss']:.4f}\n"""
                           f"""{'Surrogate loss:':>{pad}} {locs['mean_surrogate_loss']:.4f}\n"""
                           f"""{'Estimation loss:':>{pad}} {locs['mean_estimation_loss']:.4f}\n"""
-                          f"""{'Swap loss:':>{pad}} {locs['mean_swap_loss']:.4f}\n"""
+                          f"""{'KL loss:':>{pad}} {locs['mean_kl_loss']:.4f}\n"""
+                          f"""{'Reconstruction loss:':>{pad}} {locs['mean_recon_loss']:.4f}\n"""
                           f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n"""
                           f"""{'Mean reward:':>{pad}} {statistics.mean(locs['rewbuffer']):.2f}\n"""
                           f"""{'Mean episode length:':>{pad}} {statistics.mean(locs['lenbuffer']):.2f}\n""")
@@ -212,7 +234,8 @@ class HIMOnPolicyRunner:
                           f"""{'Value function loss:':>{pad}} {locs['mean_value_loss']:.4f}\n"""
                           f"""{'Surrogate loss:':>{pad}} {locs['mean_surrogate_loss']:.4f}\n"""
                           f"""{'Estimation loss:':>{pad}} {locs['mean_estimation_loss']:.4f}\n"""
-                          f"""{'Swap loss:':>{pad}} {locs['mean_swap_loss']:.4f}\n"""
+                          f"""{'KL loss:':>{pad}} {locs['mean_kl_loss']:.4f}\n"""
+                          f"""{'Reconstruction loss:':>{pad}} {locs['mean_recon_loss']:.4f}\n"""
                           f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n""")
                         #   f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
                         #   f"""{'Mean episode length/episode:':>{pad}} {locs['mean_trajectory_length']:.2f}\n""")
@@ -237,7 +260,14 @@ class HIMOnPolicyRunner:
 
     def load(self, path, load_optimizer=True):
         loaded_dict = torch.load(path)
-        self.alg.actor_critic.load_state_dict(loaded_dict['model_state_dict'])
+        # strict=False: allows loading partial weights
+        # old checkpoints (no decoder) load encoder+PPO, decoder stays random
+        missing, unexpected = self.alg.actor_critic.load_state_dict(
+            loaded_dict['model_state_dict'], strict=False)
+        if missing:
+            print(f'[load] Missing keys (will init randomly): {missing}')
+        if unexpected:
+            print(f'[load] Unexpected keys (ignored): {unexpected}')
         if load_optimizer:
             self.alg.optimizer.load_state_dict(loaded_dict['optimizer_state_dict'])
             self.alg.actor_critic.estimator.optimizer.load_state_dict(loaded_dict['estimator_optimizer_state_dict'])
